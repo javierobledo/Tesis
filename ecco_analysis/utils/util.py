@@ -54,6 +54,15 @@ def term_frequency_collection(collection):
     list_of_tuples.reverse()
     return list_of_tuples
 
+def top_k(terms,k):
+    return terms[:k]
+
+def total_terms(terms):
+    s = 0
+    for term,freq in terms:
+        s += freq
+    return s
+
 def write_csv(data,filename):
     outfile = codecs.open(filename,'w',"utf-8")
     for term,freq in data:
@@ -67,3 +76,39 @@ def write_csv_summary(data,filename):
         line = '"'+term+'";'+';'.join(['"'+unicode(x)+'"' for x in freqs])+'\n'
         outfile.write(line)
     outfile.close()
+
+def from_dict_topk_to_matrix(data):
+    v = vocabulary(data)
+    labels = [unicode(x)+'-'+unicode(y) for (x,y),z in data]
+    matrix = []
+    column_names = ['topk'] + labels
+    matrix.append(column_names)
+    for term in v:
+        row = []
+        row.append(term)
+        for i in range(len(data)):
+            (start,end),terms = data[i]
+            topk = dict(terms)
+            
+            if(term in topk):
+                row.append(topk[term])
+            else:
+                row.append(0)
+        matrix.append(row)
+    return matrix
+
+def all_to_unicode(matrix):
+    return ['"'+'";"'.join(map(unicode,row))+'"' for row in matrix]
+
+def vocabulary(data):
+    v = set()
+    for date,terms in data:
+        v |= set([x for x,y in terms])
+    return v
+
+def write_topk_csv(data,filename):
+    outfile = codecs.open(filename,'w',"utf-8")
+    for line in data:
+        outfile.write(line.replace('.',',')+'\n')
+    outfile.close()
+

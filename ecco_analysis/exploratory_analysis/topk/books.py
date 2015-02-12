@@ -1,5 +1,10 @@
-from util import *
-import sys
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+nextdir = os.path.dirname(currentdir)
+parentdir = os.path.dirname(nextdir)
+sys.path.insert(0,parentdir)
+
+from utils.util import *
 
 if len(sys.argv) > 4:
     k = int(sys.argv[3])
