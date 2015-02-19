@@ -19,7 +19,7 @@ if len(sys.argv) > 4:
     for corpus in corpus_sliced.values():
         tf = term_frequency_collection(corpus)
         start,end = slices[count]
-        write_csv(tf,'tf'+str(start)+'_'+str(end)+'.csv')
+        #write_csv(tf,'tf'+str(start)+'_'+str(end)+'.csv')
         if(count == 0):
             for term,freq in tf[0:k]:
                 top_k[term] = [freq]
