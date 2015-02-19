@@ -26,7 +26,7 @@ if len(sys.argv) > 4:
     headers = open_file(sys.argv[1],';',True)
     books = open_file(sys.argv[2],';',True)
     books_and_headers = join_dict(headers,books)
-    slices = obtain_time_slices(1700,1800,s)0
+    slices = obtain_time_slices(1700,1800,s)
     corpus_sliced = split_dict_in_time_slices(slices,books_and_headers)
     count = 0
     for corpus in corpus_sliced.values():
