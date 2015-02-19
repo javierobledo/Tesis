@@ -1,5 +1,6 @@
 /LDAMallet/nbproject/private/
 /LDAMallet/build/
+__pycache__
 # Logs and databases #
 ######################
 *.log
