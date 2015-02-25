@@ -27,6 +27,31 @@ def open_file(filename, separator, with_marks=False):
     f.close()
     return d
 
+def obtain_time_slices(start,end,portions):
+    jump = int((end - start)/portions)
+    first = list(range(start+1,end,jump))
+    last = list(range(start+jump,end+jump,jump))
+    return list(zip(first,last))
+
+def split_dict_in_time_slices(slices,books):
+    count = 0
+    d = {}
+    for id,(year,title,text) in books.items():
+        for i in range(len(slices)):
+            t0,t1 = slices[i]
+            if(t0 <= int(year) <= t1):
+                if(i not in d):
+                    d[i] = []
+                d[i].append(text.split())
+    return d
+
+def write_csv(data,filename):
+    outfile = open(filename,'w')
+    for term,freq in data:
+        line = '"'+term+'";'+'"'+str(freq).replace('.',',')+'"\n'
+        outfile.write(line)
+    outfile.close()
+
 if __name__ == "__main__":
     if(len(sys.argv) == 2):
         file_name = sys.argv[1]

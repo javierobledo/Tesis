@@ -14,11 +14,14 @@ if __name__ == "__main__":
         l = int(sys.argv[4])
         output_mat_name = sys.argv[5]
         tfidf = load_sparse_mat(mat_name,mat_filename).astype(float32)
+        m,n = tfidf.shape
+        print("Matrix dimensions: ",m,"x",n)
+        print("Row clusters:",k)
+        print("Column clusters:",l)
         start = time.time()
         model = SpectralBiclustering(n_clusters=(k,l),random_state=0)
         model.fit(tfidf)
         end = time.time()
-        print(model.column_labels_)
-        print(model.row_labels_)
         print("Biclustering process takes",int(round(end-start)),"seconds")
         save(output_mat_name,model.row_labels_.astype(float32))
+        print("Output file in",output_mat_name+".npy")
