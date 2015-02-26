@@ -26,3 +26,4 @@ Thumbs.db
 *.o
 *.so
 *.pyc
+/LDAMallet/dist/

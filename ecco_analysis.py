@@ -10,8 +10,7 @@ def df(args):
     headersfile = args.headersfile
     booksfile = args.booksfile
     s = args.s
-    print('python3 Tesis/ecco_analysis/exploratory_analysis/topk/document_frequency.py '+headersfile+' '+booksfile+' df '+str(s))
-    #os.system('python3 Tesis/ecco_analysis/exploratory_analysis/topk/document_frequency.py '+headersfile+' '+booksfile+' df '+str(s))
+    os.system('python3 Tesis/ecco_analysis/exploratory_analysis/topk/document_frequency.py '+headersfile+' '+booksfile+' df '+str(s))
 
 def topk_unigram(args):
     headersfile = args.headersfile
@@ -52,11 +51,26 @@ def indexes(args):
     index = args.index
     os.system('python3 Tesis/ecco_analysis/internal_validation/apply_index.py '+mname+' '+mfilename+' '+modelfile+' '+index)
 
-def adoption(args):
-    os.system('')
+def use_adoption(args):
+    out = args.outputfile
+    topk = args.topkfile
+    os.system('python3 Tesis/ecco_analysis/exploratory_analysis/term_index/term_index.py '+topk+' '+out)
 
-def use(args):
-    os.system('')
+def dmr_format(args):
+    headersfile = args.headersfile
+    booksfile = args.booksfile
+    feature = args.feature
+    featuresfile = args.featuresfile
+    wordsfile = args.wordsfile
+    os.system('python3 Tesis/ecco_analysis/utils/text_to_dmr_format.py '+headersfile+' '+booksfile+' '+feature+' '+featuresfile+' '+wordsfile)
+
+def dmr(args):
+    instancesfile = args.instancesfile
+    wordsfile = args.wordsfile
+    featuresfile = args.featuresfile
+    k = args.k
+    output = args.output
+    os.system('java -jar Tesis/LDAMallet/dist/LDAMallet.jar -type dmr -i '+instancesfile+' -w '+wordsfile+' -f '+featuresfile+' -k '+k+' -o '+output)
 
 # create the top-level parser
 parser = argparse.ArgumentParser(description='Process the ECCO-TCP Dataset, making an exploratory analysis (calculates tf, df, topk-unigrams and topk-bigrams) and a cluster analysis using the spectral biclustering algorithm. The clusters could be validated usign internal validation (Davies-Bouldin, Dunn or Silhouette indexes)')
@@ -83,13 +97,18 @@ topkparser.add_argument('booksfile',help='The entire filename of the books')
 topkparser.add_argument('-s',nargs='?',metavar='s',default=10,help='The quantity of periods. For example, if the books are from 1700 to 1800, and s=10, de term-frequency will be calculated for each decade, i.e., 1701-1710, 1711-1720, etc. The default value is s=10')
 topkparser.add_argument('-k',nargs='?',metavar='s',default=50,help='The k most frequent terms in each period, based on the relative term-frequency. The default value is k=50')
 topkparser.set_defaults(func=topk_unigram)
-# create the parser for the "exploratory topk-bigram command
+# create the parser for the "exploratory topk-bigram" command
 topkbigramparser = exploratorysubparsers.add_parser('topk-bigram',help='Obtain the top-k bigrams, based on the log-likelihood ratio score (LLR)',epilog='The output is a CSV file called topkbigram-k_[k]-s_[s].csv, where [k] and [s] are determined by the arguments -k and -s. This file represents a (s x |v|) matrix, where v is the union of all the top-k bigrams in each period. Each element e_ij of the matrix represents the LLR of the bigram i in the period j')
 topkbigramparser.add_argument('headersfile',help='The entire filename of the headers of books')
 topkbigramparser.add_argument('booksfile',help='The entire filename of the books')
 topkbigramparser.add_argument('-s',nargs='?',metavar='s',default=10,help='The quantity of periods. For example, if the books are from 1700 to 1800, and s=10, de term-frequency will be calculated for each decade, i.e., 1701-1710, 1711-1720, etc. The default value is s=10')
 topkbigramparser.add_argument('-k',nargs='?',metavar='s',default=50,help='The k most frequent bigrams in each period, based on the LLR. The default value is k=50')
 topkbigramparser.set_defaults(func=topk_bigram)
+# create the parser for the "exploratory term-indexes" command
+indexesparser = exploratorysubparsers.add_parser('term-indexes',help='Obtain the adoption index and use index based on the top-k unigram or bigram information',epilog='The output is a CSV file with three columns: term;use_index;adoption_index')
+indexesparser.add_argument('topkfile',help='The entire filename of the topk-unigram or topk-bigram CSV file')
+indexesparser.add_argument('outputfile',help='The CSV filename for the result')
+indexesparser.set_defaults(func=use_adoption)
 # create the parser for the "cluster" command
 clusterparser = subparsers.add_parser('cluster',help='A Cluster Analysis classifies the documents in clusters, using the spectracl biclustering algorithm')
 clustersubparsers = clusterparser.add_subparsers(title='Cluster Analysis',description='Options for Cluster Analysis')
@@ -119,6 +138,33 @@ internalparser.add_argument('-mfilename',nargs='?',metavar='matrix_filename',def
 internalparser.add_argument('-modelfile',nargs='?',metavar='filename',help='The filename of the file where the bicluster model will be read')
 internalparser.add_argument('index',help='The index name. This could be: dunn (for dunn index), db (for davies-bouldin index) or sh (for silhouette index)')
 internalparser.set_defaults(func=indexes)
+# create the parser for the "lda" command
+ldaparser = subparsers.add_parser('lda',help='Topic Models based on LDA. You can choose between different tips of LDA algorithms for classify the ECCO-TCP Dataset')
+ldasubparsers = ldaparser.add_subparsers(title='Latent Dirichlet Allocation',description='Select a LDA algorithm')
+# create the parser for the "lda classic" command
+classicldaparser = ldasubparsers.add_parser('classic',help='Classic LDA Algorithm (Blei 2003) implemented in mallet',epilog='The output are s CSV files (determined for the quantity of periods), each one with two columns: terms;frequency, where terms are the terms in de vocabulary of the period, and frequency is the relative term-frequency of the term')
+classicldaparser.add_argument('headersfile',help='The entire filename of the headers of books')
+classicldaparser.add_argument('booksfile',help='The entire filename of the books')
+classicldaparser.add_argument('-k',nargs='?',metavar='k',default=2,help='The number of topics. The default value is k=2')
+classicldaparser.set_defaults(func=tf)
+dmrparser = ldasubparsers.add_parser('dmr',help='DMR Algorithm (Mc Callum) implemented in mallet',epilog='')
+dmrparser.add_argument('featuresfile',help='The entire filename of the features file obtained by the input dmr option')
+dmrparser.add_argument('wordsfile',help='The entire filename of the words file obtained by the input dmr option')
+dmrparser.add_argument('-k',nargs='?',metavar='k',default=2,help='The number of topics. The default value is k=2')
+dmrparser.add_argument('-instancesfile',nargs='?',metavar='filename',help='The filename of the instances file generated by the algorithm')
+dmrparser.add_argument('-output',nargs='?',metavar='filename',help='The filename of the instances file generated by the algorithm')
+dmrparser.set_defaults(func=dmr)
+# create the parser for the "lda" command
+inputparser = subparsers.add_parser('input',help='Differents formats for the original ECCO-TCP dataset')
+inputsubparsers = inputparser.add_subparsers(title='Formats',description='Select a format')
+ldaformatparser = inputsubparsers.add_parser('classic-lda',help='Format needed for the classic LDA algorithm (Blei 2003)')
+dmrformatparser = inputsubparsers.add_parser('dmr',help='Format needed for DMR algorithm (Mc Callum)')
+dmrformatparser.add_argument('headersfile',help='The entire filename of the headers of books')
+dmrformatparser.add_argument('booksfile',help='The entire filename of the books')
+dmrformatparser.add_argument('-feature',nargs='?',metavar='name',default='year',help='The name of the feature to be considered (it could be: year, title, id). The default value is feature=year')
+dmrformatparser.add_argument('-featuresfile',nargs='?',metavar='filename',default='features.data',help='The filename of the features file. The default value is featuresfile=features.data')
+dmrformatparser.add_argument('-wordsfile',nargs='?',metavar='filename',default='words.data',help='The filename of the words file. The default value is wordsfile=words.data')
+dmrformatparser.set_defaults(func=dmr_format)
 args = parser.parse_args()
 if hasattr(args, 'func'):
     args.func(args)

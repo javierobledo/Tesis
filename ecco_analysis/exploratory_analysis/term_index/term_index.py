@@ -44,11 +44,14 @@ def adoption_index(w):
     return sum
 
 if __name__ == "__main__":
-    if(len(sys.argv[1:]) > 0):
+    if(len(sys.argv[1:]) > 1):
         file_name = sys.argv[1]
+        output = sys.argv[2]
         words,LR = csv_to_array(file_name,';')
         d = period_array(LR)
         n = words.size
-        print('word;use_index;adoption_index')
+        outfile = open(output,'w')
+        outfile.write('term;use_index;adoption_index\n')
         for i in range(n):
-            print(words[i]+';',use_index(i),';',adoption_index(i))
+            outfile.write(words[i]+';'+str(use_index(i)).replace('.',',')+';'+str(adoption_index(i)).replace('.',',')+'\n')
+        outfile.close()

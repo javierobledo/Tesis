@@ -43,7 +43,7 @@ public class LDAMallet {
                     }
                     DMR dmr = new DMR(Integer.parseInt(k));
                     try{
-                        dmr.classify(instancesFile, "hola");
+                        dmr.classify(instancesFile, (String)commands.get("o"));
                     }catch(IOException e){
                         
                     }
