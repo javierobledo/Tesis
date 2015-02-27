@@ -25,8 +25,8 @@ public class DMR {
     public void classify(String filename, String output) throws IOException{
         InstanceList training = InstanceList.load (new File(filename));
         DMRTopicModel lda = new DMRTopicModel(k);
-                lda.setOptimizeInterval(10);
-                lda.setTopicDisplay(10, 11);
+                lda.setOptimizeInterval(100);
+                lda.setTopicDisplay(100, 10);
                 lda.addInstances(training);
                 lda.estimate();
                 lda.writeParameters(new File(output+"_dmr.parameters"));
