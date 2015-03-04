@@ -1,30 +1,32 @@
 import os, argparse
 
+path = os.getcwd()
+
 def tf(args):
     headersfile = args.headersfile
     booksfile = args.booksfile
     s = args.s
-    os.system('python3 Tesis/ecco_analysis/exploratory_analysis/topk/term_frequency.py '+headersfile+' '+booksfile+' tf '+str(s))
+    os.system('python3 '+path+'/ecco_analysis/exploratory_analysis/topk/term_frequency.py '+headersfile+' '+booksfile+' tf '+str(s))
 
 def df(args):
     headersfile = args.headersfile
     booksfile = args.booksfile
     s = args.s
-    os.system('python3 Tesis/ecco_analysis/exploratory_analysis/topk/document_frequency.py '+headersfile+' '+booksfile+' df '+str(s))
+    os.system('python3 '+path+'/ecco_analysis/exploratory_analysis/topk/document_frequency.py '+headersfile+' '+booksfile+' df '+str(s))
 
 def topk_unigram(args):
     headersfile = args.headersfile
     booksfile = args.booksfile
     s = args.s
     k = args.k
-    os.system('python Tesis/ecco_analysis/exploratory_analysis/topk/topk.py '+headersfile+' '+booksfile+' '+str(s)+' '+str(k))
+    os.system('python '+path+'/ecco_analysis/exploratory_analysis/topk/topk.py '+headersfile+' '+booksfile+' '+str(s)+' '+str(k))
 
 def topk_bigram(args):
     headersfile = args.headersfile
     booksfile = args.booksfile
     s = args.s
     k = args.k
-    os.system('python Tesis/ecco_analysis/exploratory_analysis/topk_bigram/bigram.py '+headersfile+' '+booksfile+' '+str(k)+' '+str(s))
+    os.system('python '+path+'/ecco_analysis/exploratory_analysis/topk_bigram/bigram.py '+headersfile+' '+booksfile+' '+str(k)+' '+str(s))
 
 def tfidf(args):
     headersfile = args.headersfile
@@ -34,7 +36,7 @@ def tfidf(args):
     mindf = args.mindf
     min_n = args.min_n
     max_n = args.max_n
-    os.system('python3 Tesis/ecco_analysis/spectral_clustering/text_to_tfidf.py '+headersfile+' '+booksfile+' '+mname+' '+mfilename+' '+str(mindf)+' '+str(min_n)+' '+str(max_n))
+    os.system('python3 '+path+'/ecco_analysis/spectral_clustering/text_to_tfidf.py '+headersfile+' '+booksfile+' '+mname+' '+mfilename+' '+str(mindf)+' '+str(min_n)+' '+str(max_n))
 
 def clustering(args):
     mname = args.mname
@@ -42,19 +44,19 @@ def clustering(args):
     k1 = args.k1
     k2 = args.k2
     output = args.output+'-k1_'+str(k1)+'-k2_'+str(k2)
-    os.system('python3 Tesis/ecco_analysis/spectral_clustering/spectral.py '+mname+' '+mfilename+' '+str(k1)+' '+str(k2)+' '+output)
+    os.system('python3 '+path+'/ecco_analysis/spectral_clustering/spectral.py '+mname+' '+mfilename+' '+str(k1)+' '+str(k2)+' '+output)
 
 def indexes(args):
     mname = args.mname
     mfilename = args.mfilename
     modelfile = args.modelfile
     index = args.index
-    os.system('python3 Tesis/ecco_analysis/internal_validation/apply_index.py '+mname+' '+mfilename+' '+modelfile+' '+index)
+    os.system('python3 '+path+'/ecco_analysis/internal_validation/apply_index.py '+mname+' '+mfilename+' '+modelfile+' '+index)
 
 def use_adoption(args):
     out = args.outputfile
     topk = args.topkfile
-    os.system('python3 Tesis/ecco_analysis/exploratory_analysis/term_index/term_index.py '+topk+' '+out)
+    os.system('python3 '+path+'/ecco_analysis/exploratory_analysis/term_index/term_index.py '+topk+' '+out)
 
 def dmr_format(args):
     headersfile = args.headersfile
@@ -62,7 +64,7 @@ def dmr_format(args):
     feature = args.feature
     featuresfile = args.featuresfile
     wordsfile = args.wordsfile
-    os.system('python3 Tesis/ecco_analysis/utils/text_to_dmr_format.py '+headersfile+' '+booksfile+' '+feature+' '+featuresfile+' '+wordsfile)
+    os.system('python3 '+path+'/ecco_analysis/utils/text_to_dmr_format.py '+headersfile+' '+booksfile+' '+feature+' '+featuresfile+' '+wordsfile)
 
 def dmr(args):
     instancesfile = args.instancesfile
@@ -70,7 +72,7 @@ def dmr(args):
     featuresfile = args.featuresfile
     k = args.k
     output = args.output
-    os.system('java -jar Tesis/LDAMallet/dist/LDAMallet.jar -type dmr -i '+instancesfile+' -w '+wordsfile+' -f '+featuresfile+' -k '+k+' -o '+output)
+    os.system('java -jar '+path+'/LDAMallet/dist/LDAMallet.jar -type dmr -i '+instancesfile+' -w '+wordsfile+' -f '+featuresfile+' -k '+k+' -o '+output)
 
 # create the top-level parser
 parser = argparse.ArgumentParser(description='Process the ECCO-TCP Dataset, making an exploratory analysis (calculates tf, df, topk-unigrams and topk-bigrams) and a cluster analysis using the spectral biclustering algorithm. The clusters could be validated usign internal validation (Davies-Bouldin, Dunn or Silhouette indexes)')
