@@ -27,7 +27,7 @@ def topk_bigram(args):
     s = args.s
     k = args.k
     minf = args.minf
-    os.system('python '+path+'/ecco_analysis/exploratory_analysis/topk_bigram/bigram.py '+headersfile+' '+booksfile+' '+str(k)+' '+str(s)+' '+str(minf))
+    os.system('python3 '+path+'/ecco_analysis/exploratory_analysis/topk_bigram/bigram.py '+headersfile+' '+booksfile+' '+str(k)+' '+str(s)+' '+str(minf))
 
 def tfidf(args):
     headersfile = args.headersfile

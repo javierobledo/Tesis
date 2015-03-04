@@ -52,6 +52,41 @@ def write_csv(data,filename):
         outfile.write(line)
     outfile.close()
 
+def write_topk_csv(data,filename):
+    outfile = open(filename,'w')
+    for line in data:
+        outfile.write(line.replace('.',',')+'\n')
+    outfile.close()
+
+def from_dict_topk_to_matrix(data):
+    v = vocabulary(data)
+    labels = [str(x)+'-'+str(y) for (x,y),z in data]
+    matrix = []
+    column_names = ['topk'] + labels
+    matrix.append(column_names)
+    for term in v:
+        row = []
+        row.append(term)
+        for i in range(len(data)):
+            (start,end),terms = data[i]
+            topk = dict(terms)
+            
+            if(term in topk):
+                row.append(topk[term])
+            else:
+                row.append(0)
+        matrix.append(row)
+    return matrix
+
+def vocabulary(data):
+    v = set()
+    for date,terms in data:
+        v |= set([x for x,y in terms])
+    return v
+
+def all_to_line(matrix):
+    return ['"'+'";"'.join(map(str,row))+'"' for row in matrix]
+
 if __name__ == "__main__":
     if(len(sys.argv) == 2):
         file_name = sys.argv[1]
