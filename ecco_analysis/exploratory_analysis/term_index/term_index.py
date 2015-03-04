@@ -43,15 +43,20 @@ def adoption_index(w):
             sum += (LR[w,i]-LR[w,j])*d[w,i]*d[w,j]
     return sum
 
+def total(data):
+    n,_ = data.shape
+    return array([sum(data[i]) for i in range(n)])
+
 if __name__ == "__main__":
     if(len(sys.argv[1:]) > 1):
         file_name = sys.argv[1]
         output = sys.argv[2]
         words,LR = csv_to_array(file_name,';')
+        fr = total(LR)
         d = period_array(LR)
         n = words.size
         outfile = open(output,'w')
-        outfile.write('term;use_index;adoption_index\n')
+        outfile.write('term;total_frequency;use_index;adoption_index\n')
         for i in range(n):
-            outfile.write(words[i]+';'+str(use_index(i)).replace('.',',')+';'+str(adoption_index(i)).replace('.',',')+'\n')
+            outfile.write(words[i]+';'+str(fr[i]).replace('.',',')+';'+str(use_index(i)).replace('.',',')+';'+str(adoption_index(i)).replace('.',',')+'\n')
         outfile.close()

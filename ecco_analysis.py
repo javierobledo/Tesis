@@ -1,6 +1,6 @@
 import os, argparse
 
-path = os.getcwd()
+path = os.path.dirname(os.path.realpath(__file__))
 
 def tf(args):
     headersfile = args.headersfile
@@ -26,7 +26,8 @@ def topk_bigram(args):
     booksfile = args.booksfile
     s = args.s
     k = args.k
-    os.system('python '+path+'/ecco_analysis/exploratory_analysis/topk_bigram/bigram.py '+headersfile+' '+booksfile+' '+str(k)+' '+str(s))
+    minf = args.minf
+    os.system('python '+path+'/ecco_analysis/exploratory_analysis/topk_bigram/bigram.py '+headersfile+' '+booksfile+' '+str(k)+' '+str(s)+' '+str(minf))
 
 def tfidf(args):
     headersfile = args.headersfile
@@ -105,6 +106,7 @@ topkbigramparser.add_argument('headersfile',help='The entire filename of the hea
 topkbigramparser.add_argument('booksfile',help='The entire filename of the books')
 topkbigramparser.add_argument('-s',nargs='?',metavar='s',default=10,help='The quantity of periods. For example, if the books are from 1700 to 1800, and s=10, de term-frequency will be calculated for each decade, i.e., 1701-1710, 1711-1720, etc. The default value is s=10')
 topkbigramparser.add_argument('-k',nargs='?',metavar='s',default=50,help='The k most frequent bigrams in each period, based on the LLR. The default value is k=50')
+topkbigramparser.add_argument('-minf',nargs='?',metavar='f',default=2,help='The minimum value of frequency for a bigram. The default value is minf=2')
 topkbigramparser.set_defaults(func=topk_bigram)
 # create the parser for the "exploratory term-indexes" command
 indexesparser = exploratorysubparsers.add_parser('term-indexes',help='Obtain the adoption index and use index based on the top-k unigram or bigram information',epilog='The output is a CSV file with three columns: term;use_index;adoption_index')

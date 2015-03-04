@@ -10,10 +10,11 @@ sys.path.insert(0,parentdir)
 
 from utils.util import *
 
-if len(sys.argv) > 4:
+if len(sys.argv) > 5:
     data = []
     k = int(sys.argv[3])
     s = int(sys.argv[4])
+    minf = int(sys.argv[5])
     headers = open_file(sys.argv[1],';',True)
     books = open_file(sys.argv[2],';',True)
     books_and_headers = join_dict(headers,books)
@@ -26,7 +27,8 @@ if len(sys.argv) > 4:
             words += text
         t = Text(text)
         bcf = BigramCollocationFinder.from_words(t.tokens)
+        bcf.apply_freq_filter(minf)
         scored = bcf.score_ngrams(BigramAssocMeasures.likelihood_ratio)[0:k]
         start,end = slices[id]
         data.append(((start,end),[(x+' '+y,z) for (x,y),z in scored]))
-    write_topk_csv(all_to_unicode(from_dict_topk_to_matrix(data)),'topkbigram-k_'+str(k)+'-s_'+str(s)+'.csv')
+    write_topk_csv(all_to_unicode(from_dict_topk_to_matrix(data)),'topkbigram-k_'+str(k)+'-s_'+str(s)+'-f_'+str(minf)+'.csv')
