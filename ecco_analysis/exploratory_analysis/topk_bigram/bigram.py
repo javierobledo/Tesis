@@ -36,14 +36,32 @@ if len(sys.argv) > 5:
     for id,corpus_slice in corpus_slices.items():
         corpus = join_text(corpus_slice)
         v = preprocess(minf,corpus)
+        print(len(v))
         line = []
         words = []
         for text in corpus_slice:
             words += text
         t = Text(text)
         bcf = BigramCollocationFinder.from_words(t.tokens)
-        bcf.apply_word_filter(lambda w: w not in v)
-        scored = bcf.score_ngrams(BigramAssocMeasures.likelihood_ratio)[0:k]
+        #bcf.apply_word_filter()
+        scored = bcf.score_ngrams(BigramAssocMeasures.likelihood_ratio)
         start,end = slices[id]
-        data.append(((start,end),[(x+' '+y,z) for (x,y),z in scored]))
+        info = []
+        i = 0
+        r = 0
+        while True:
+            (x,y),z = scored[i]
+            bigram = x+' '+y
+            if bigram in v:
+                #print(bigram,z)
+                info.append((bigram,z))
+                r += 1
+                    #else:
+            #print(bigram,'not in v')
+            if r == k:
+                break
+            i += 1
+                    #print(info)
+        data.append(((start,end),info))
+        #data.append(((start,end),[(x+' '+y,z) for (x,y),z in scored]))
     write_topk_csv(all_to_line(from_dict_topk_to_matrix(data)),'topkbigram-k_'+str(k)+'-s_'+str(s)+'-f_'+str(minf)+'.csv')
