@@ -28,4 +28,5 @@ Thumbs.db
 *.so
 *.pyc
 *.jar
+*.py~
 /LDAMallet/dist/
