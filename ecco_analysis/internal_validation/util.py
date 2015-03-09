@@ -15,7 +15,20 @@ def obtain_clusters_as_cluster_of_vectors(X,labels):
         clusters.append(obtain_cluster_of_vectors(X,labels,real_labels[i]))
     return clusters,real_labels
 
+def obtain_clusters_as_cluster_of_vectors_sparse(X,labels):
+    print("Compute cluster vectors...")
+    real_labels = unique(labels)
+    n = len(real_labels)
+    clusters = []
+    for i in range(n):
+        print(int(((i+1.0)/n)*100),"%")
+        clusters.append(obtain_cluster_of_vectors_sparse(X,labels,real_labels[i]))
+    return clusters,real_labels
+
 def obtain_cluster_of_vectors(X,labels,label):
+    return X[where(labels==label)]
+
+def obtain_cluster_of_vectors_sparse(X,labels,label):
     return X[where(labels==label)]
 
 def obtain_centroids_of_clusters(C):
@@ -27,6 +40,15 @@ def obtain_centroids_of_clusters(C):
         centroids.append(obtain_centroid_of_cluster(C[i]))
     return centroids
 
+def obtain_centroids_of_clusters_sparse(C):
+    centroids = []
+    n = len(C)
+    print("Compute centroids...")
+    for i in range(n):
+        print(int(((i+1.0)/n)*100),"%")
+        centroids.append(obtain_centroid_of_cluster_sparse(C[i]))
+    return centroids
+
 def obtain_centroid_of_cluster(C_i):
     n,m = C_i.shape
     center = zeros(m,dtype=float32)
@@ -34,6 +56,10 @@ def obtain_centroid_of_cluster(C_i):
         y = C_i[:,j]
         center[j] = sum(y)/n
     return center
+
+def obtain_centroid_of_cluster_sparse(C_i):
+    n,_ = C_i.shape
+    return C_i.sum(0).A1*(1.0/n)
 
 def select_norm_ord(metric):
     if(metric == 'euclidean'):
@@ -58,6 +84,20 @@ def obtain_scatter_degree_in_clusters(C,A,metric):
 
 def obtain_scatter_degree_in_cluster(C_i,A_i,o):
     T_i = len(C_i)
+    return (1.0/T_i)*sum([norm(C_i[j]-A_i,o) for j in range(T_i)])
+
+def obtain_scatter_degree_in_clusters_sparse(C,A,metric):
+    scatters = []
+    print("Compute scatter in clusters...")
+    o = select_norm_ord(metric)
+    n = len(C)
+    for i in range(n):
+        print(int(((i+1.0)/n)*100),"%")
+        scatters.append(obtain_scatter_degree_in_cluster_sparse(C[i],A[i],o))
+    return scatters
+
+def obtain_scatter_degree_in_cluster_sparse(C_i,A_i,o):
+    T_i,_ = C_i.shape
     return (1.0/T_i)*sum([norm(C_i[j]-A_i,o) for j in range(T_i)])
 
 def obtain_measure_of_separation_between_clusters(A,metric):
