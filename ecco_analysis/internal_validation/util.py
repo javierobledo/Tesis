@@ -143,12 +143,35 @@ def distance_intercluster(C_i,C_j):
             d[i,j] = euclidean(C_i[i],C_j[j])
     return min(d)
 
+def distance_intercluster_sparse(C_i,C_j):
+    n,_ = C_i.shape
+    m,_ = C_j.shape
+    p = int(n/100)
+    d = zeros((n,m),dtype=float32)
+    for i in range(n):
+        if((i/p)%5 == 0):
+            print(int(((i+1.0)/n)*100),"%")
+        for j in range(m):
+            d[i,j] = float32((C_i[i]-C_j[j]).dot((C_i[i]-C_j[j]).transpose())[0,0]**.5)
+    return min(d)
+
 def distance_intracluster(C_i):
     n,m = C_i.shape
     d = zeros((n,n),dtype=float32)
     for i in range(n):
         for j in range(i):
             d[i,j] = euclidean(C_i[i],C_i[j])
+    return max(d)
+
+def distance_intracluster_sparse(C_i):
+    n,m = C_i.shape
+    p = int(n/100)
+    d = zeros((n,n),dtype=float32)
+    for i in range(n):
+        for j in range(i):
+            d[i,j] = float32((C_i[i]-C_i[j]).dot((C_i[i]-C_i[j]).transpose())[0,0]**.5)
+        if((i/p)%10 == 0):
+            print(int(i/p),'%')
     return max(d)
 
 def obtain_distance_intraclusters(C):
@@ -160,14 +183,23 @@ def obtain_distance_intraclusters(C):
         d[i] = distance_intracluster(C[i])
     return d
 
-def obtain_distance_interclusters(C):
+def obtain_distance_intraclusters_sparse(C):
+    n = len(C)
+    d = zeros(n,dtype=float32)
+    print("Compute distance intraclusters...")
+    for i in range(n):
+        print("Cluster ",i,":")
+        d[i] = distance_intracluster_sparse(C[i])
+    return d
+
+def obtain_distance_interclusters_sparse(C):
     n = len(C)
     d = zeros((n,n),dtype=float32)
     print("Compute distance interclusters...")
     for i in range(n):
-        print(int(((i+1.0)/n)*100),"%")
+        print("Cluster ",i,":")
         for j in range(i):
-            d[i,j] = distance_intercluster(C[i],C[j])
+            d[i,j] = distance_intercluster_sparse(C[i],C[j])
             d[j,i] = d[i,j]
     return d
 

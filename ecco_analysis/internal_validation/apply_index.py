@@ -1,6 +1,6 @@
 import sys,os,inspect
 from davies_bouldin import davies_bouldin
-from  dunn import dunn
+from  dunn import dunn,dunn_sparse
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
@@ -17,9 +17,9 @@ if(__name__ == '__main__'):
         data = load_sparse_mat(data_name,data_filename).astype(float32)
         model = load(model_filename).astype(int)
         if(index == 'dunn'):
-            du = dunn(data,model)
-            print(du)
-            du = dunn(data,model)
+            #  du = dunn(data,model)
+            #  print(du)
+            du = dunn_sparse(data,model)
             print(du)
         elif(index == 'db'):
             dbi = davies_bouldin(data,model)
