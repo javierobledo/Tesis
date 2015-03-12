@@ -48,15 +48,17 @@ def total(data):
     return array([sum(data[i]) for i in range(n)])
 
 if __name__ == "__main__":
-    if(len(sys.argv[1:]) > 1):
+    if(len(sys.argv[1:]) > 2):
         file_name = sys.argv[1]
-        output = sys.argv[2]
+        d_file_name = sys.argv[2]
+        output = sys.argv[3]
         words,LR = csv_to_array(file_name,';')
+        _,d = csv_to_array(d_file_name,';')
         fr = total(LR)
-        d = period_array(LR)
         n = words.size
         outfile = open(output,'w')
         outfile.write('term;total_frequency;use_index;adoption_index\n')
         for i in range(n):
-            outfile.write(words[i]+';'+str(fr[i]).replace('.',',')+';'+str(use_index(i)).replace('.',',')+';'+str(adoption_index(i)).replace('.',',')+'\n')
+            line = words[i]+';'+str(fr[i]).replace('.',',')+';'+str(use_index(i)).replace('.',',')+';'+str(adoption_index(i)).replace('.',',')+'\n'
+            outfile.write(line)
         outfile.close()
