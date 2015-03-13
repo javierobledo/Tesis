@@ -17,16 +17,12 @@ if(__name__ == '__main__'):
         data = load_sparse_mat(data_name,data_filename).astype(float32)
         model = load(model_filename).astype(int)
         if(index == 'dunn'):
-            #  du = dunn(data,model)
-            #  print(du)
             du = dunn_sparse(data,model)
             print(du)
         elif(index == 'db'):
             dbi = davies_bouldin(data,model)
             print(dbi)
         elif(index == 'sh'):
-            sh = silhouette_score(data,model)
-            print(sh)
             sh = silhouette_score(data,model)
             print(sh)
         else:
