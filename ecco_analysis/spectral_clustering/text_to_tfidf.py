@@ -1,6 +1,6 @@
 import os,sys,inspect
 from sklearn.feature_extraction.text import TfidfVectorizer
-from numpy import float32
+from numpy import float32,save
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir)
@@ -25,3 +25,5 @@ if(len(sys.argv) == 8):
     vectorizer = TfidfVectorizer(min_df=min_df_value,dtype=float32,ngram_range=(min_n,max_n))
     X = vectorizer.fit_transform(data)
     store_sparse_mat(X,mat_name,mat_filename)
+    y = vectorizer.get_feature_names()
+    save(mat_name+"_features",y)

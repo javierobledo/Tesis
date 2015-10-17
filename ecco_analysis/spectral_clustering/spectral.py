@@ -23,5 +23,6 @@ if __name__ == "__main__":
         model.fit(tfidf)
         end = time.time()
         print("Biclustering process takes",int(round(end-start)),"seconds")
-        save(output_mat_name,model.row_labels_.astype(float32))
-        print("Output file in",output_mat_name+".npy")
+        save(output_mat_name+"_documents",model.row_labels_.astype(float32))
+        save(output_mat_name+"_terms",model.column_labels_.astype(float32))
+        print("Output file in",output_mat_name+"_documents.npy and",output_mat_name+"_terms.npy")
